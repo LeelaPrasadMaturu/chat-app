@@ -35,7 +35,7 @@ app.use(express.json()); // Parse JSON bodies
 
 app.get('/generate-link', (req, res) => {
     const roomId = uuidv4();
-    res.send({ link: `http://localhost:3000/chat.html?room=${roomId}` });
+    res.send({ link: `https://basic-chat-web.vercel.app/chat.html?room=${roomId}` });
 });
 
 app.get('/chat.html', (req, res) => {
