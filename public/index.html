@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Chat App</h1>
+        <div class="button-container">
+            <button id="generate-link-button">Generate Link</button>
+            <button id="join-chat-button">Join Chat</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('generate-link-button').addEventListener('click', function() {
+            fetch('/generate-link')
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Your chat link: ${data.link}`);
+                })
+                .catch(error => console.error('Error generating link:', error));
+        });
+
+        document.getElementById('join-chat-button').addEventListener('click', function() {
+            const link = prompt('Enter chat link:');
+            if (link) {
+                window.location.href = link;
+            }
+        });
+    </script>
+   
+</body>
+</html>
