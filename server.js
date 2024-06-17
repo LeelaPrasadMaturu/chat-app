@@ -66,16 +66,17 @@ wss.on('connection', (ws, req) => {
             await newMessage.save();
             // Broadcast message to all clients in the same room
             wss.clients.forEach(client => {
-                if (client.readyState === ws.OPEN && client.room === room) {
-                    client.send(JSON.stringify(newMessage));
+                if (client.readyState === ws.OPEN) {
+                    const clientParams = new URLSearchParams(client.url.split('?')[1]);
+                    if (clientParams.get('room') === room) {
+                        client.send(JSON.stringify(newMessage));
+                    }
                 }
             });
         } catch (error) {
             console.error('Error saving message:', error);
         }
     });
-
-    ws.room = room; // Store the room on the WebSocket connection
 });
 
 server.listen(3000, function() {
