@@ -3,10 +3,6 @@ const http = require('http');
 const mongoose = require('mongoose');
 const { Server } = require('ws');
 const { v4: uuidv4 } = require('uuid');
-
-// // Connect to MongoDB
-// 
-
 require('dotenv').config(); // Load environment variables from .env file
 
 // Connect to MongoDB
@@ -35,7 +31,7 @@ app.use(express.json()); // Parse JSON bodies
 
 app.get('/generate-link', (req, res) => {
     const roomId = uuidv4();
-    res.send({ link: `https://basic-chat-web.onrender.com/chat.html?room=${roomId}` });
+    res.send({ roomId });
 });
 
 app.get('/chat.html', (req, res) => {
@@ -53,10 +49,13 @@ app.get('/messages/:room', async (req, res) => {
     }
 });
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
+    const params = new URLSearchParams(req.url.split('?')[1]);
+    const room = params.get('room');
+
     ws.on('message', async (message) => {
         const parsedMessage = JSON.parse(message);
-        const { room, username, text } = parsedMessage;
+        const { username, text } = parsedMessage;
         
         if (!room || !username || !text) {
             return;
@@ -65,9 +64,9 @@ wss.on('connection', (ws) => {
         try {
             const newMessage = new Message({ room, username, text });
             await newMessage.save();
-            // Broadcast message to all clients
+            // Broadcast message to all clients in the same room
             wss.clients.forEach(client => {
-                if (client.readyState === ws.OPEN) {
+                if (client.readyState === ws.OPEN && client.room === room) {
                     client.send(JSON.stringify(newMessage));
                 }
             });
@@ -75,6 +74,8 @@ wss.on('connection', (ws) => {
             console.error('Error saving message:', error);
         }
     });
+
+    ws.room = room; // Store the room on the WebSocket connection
 });
 
 server.listen(3000, function() {

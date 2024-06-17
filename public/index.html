@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Welcome to Chat App</h1>
         <div class="button-container">
-            <button id="generate-link-button">Generate Link</button>
+            <button id="generate-link-button">Generate Room ID</button>
             <button id="join-chat-button">Join Chat</button>
         </div>
     </div>
@@ -19,18 +19,17 @@
             fetch('/generate-link')
                 .then(response => response.json())
                 .then(data => {
-                    alert(`Your chat link: ${data.link}`);
+                    alert(`Your Room ID: ${data.roomId}`);
                 })
-                .catch(error => console.error('Error generating link:', error));
+                .catch(error => console.error('Error generating room ID:', error));
         });
 
         document.getElementById('join-chat-button').addEventListener('click', function() {
-            const link = prompt('Enter chat link:');
-            if (link) {
-                window.location.href = link;
+            const roomId = prompt('Enter Room ID:');
+            if (roomId) {
+                window.location.href = `/chat.html?room=${roomId}`;
             }
         });
     </script>
-   
 </body>
 </html>

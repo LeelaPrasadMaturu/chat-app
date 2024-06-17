@@ -27,9 +27,8 @@
             const usernameButton = document.getElementById('username-button');
             let username = '';
             let room = new URLSearchParams(window.location.search).get('room');
-            const socket = new WebSocket(`ws://${window.location.host}`);
+            const socket = new WebSocket(`ws://${window.location.host}/ws?room=${room}`);
             
-          
             usernameButton.addEventListener('click', function() {
                 username = usernameInput.value.trim();
                 if (username) {
@@ -38,6 +37,7 @@
                     chatInput.disabled = false;
                     sendButton.disabled = false;
                     chatInput.focus();
+                    fetchMessages();
                 }
             });
 
@@ -71,6 +71,14 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 messageDiv.textContent = `${message.username}: ${message.text}`;
+                
+                if (message.username === username) {
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.onclick = () => deleteMessage(message._id);
+                    messageDiv.appendChild(deleteButton);
+                }
+
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
