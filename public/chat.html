@@ -29,28 +29,17 @@
             let room = new URLSearchParams(window.location.search).get('room');
             const socket = new WebSocket(`ws://${window.location.host}`);
             
-            usernameButton.addEventListener('click', function () {
-              setUsername();
-             });
-
-            chatInput.addEventListener('keypress', function (e) {
-              if (e.key === 'Enter') {
-                  setUsername();
-                 }
-                 });
-
-          function setUsername() {
-           username = usernameInput.value.trim();
-         if (username) {
-        usernameInput.disabled = true;
-        usernameButton.disabled = true;
-        chatInput.disabled = false;
-        sendButton.disabled = false;
-        chatInput.focus();
-        fetchMessages();
-           }
-       }
-
+          
+            usernameButton.addEventListener('click', function() {
+                username = usernameInput.value.trim();
+                if (username) {
+                    usernameInput.disabled = true;
+                    usernameButton.disabled = true;
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    chatInput.focus();
+                }
+            });
 
             sendButton.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', function (e) {
