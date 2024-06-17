@@ -56,21 +56,19 @@ wss.on('connection', (ws, req) => {
     ws.on('message', async (message) => {
         const parsedMessage = JSON.parse(message);
         const { username, text } = parsedMessage;
-        
+
         if (!room || !username || !text) {
             return;
         }
-        
+
         try {
             const newMessage = new Message({ room, username, text });
             await newMessage.save();
             // Broadcast message to all clients in the same room
             wss.clients.forEach(client => {
-                if (client.readyState === ws.OPEN) {
-                    const clientParams = new URLSearchParams(client.url.split('?')[1]);
-                    if (clientParams.get('room') === room) {
-                        client.send(JSON.stringify(newMessage));
-                    }
+                const clientParams = new URLSearchParams(client.url.split('?')[1]);
+                if (client.readyState === ws.OPEN && clientParams.get('room') === room) {
+                    client.send(JSON.stringify(newMessage));
                 }
             });
         } catch (error) {
