@@ -27,8 +27,8 @@
             const usernameButton = document.getElementById('username-button');
             let username = '';
             let room = new URLSearchParams(window.location.search).get('room');
-            const socket = new WebSocket(`wss://${window.location.host}/ws?room=${room}`);
-
+            const socket = new WebSocket(`ws://${window.location.host}/ws?room=${room}`);
+            
             usernameButton.addEventListener('click', function() {
                 username = usernameInput.value.trim();
                 if (username) {
@@ -71,7 +71,7 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 messageDiv.textContent = `${message.username}: ${message.text}`;
-                chatBox.appendChild(messageDiv);
+                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
 

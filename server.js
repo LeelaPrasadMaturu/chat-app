@@ -56,18 +56,17 @@ wss.on('connection', (ws, req) => {
     ws.on('message', async (message) => {
         const parsedMessage = JSON.parse(message);
         const { username, text } = parsedMessage;
-
+        
         if (!room || !username || !text) {
             return;
         }
-
+        
         try {
             const newMessage = new Message({ room, username, text });
             await newMessage.save();
             // Broadcast message to all clients in the same room
             wss.clients.forEach(client => {
-                const clientParams = new URLSearchParams(client.url.split('?')[1]);
-                if (client.readyState === ws.OPEN && clientParams.get('room') === room) {
+                if (client.readyState === ws.OPEN && client.room === room) {
                     client.send(JSON.stringify(newMessage));
                 }
             });
@@ -75,6 +74,8 @@ wss.on('connection', (ws, req) => {
             console.error('Error saving message:', error);
         }
     });
+
+    ws.room = room; // Store the room on the WebSocket connection
 });
 
 server.listen(3000, function() {
