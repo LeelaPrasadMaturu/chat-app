@@ -71,14 +71,6 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message';
                 messageDiv.textContent = `${message.username}: ${message.text}`;
-                
-                if (message.username === username) {
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
-                    deleteButton.onclick = () => deleteMessage(message._id);
-                    messageDiv.appendChild(deleteButton);
-                }
-
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
